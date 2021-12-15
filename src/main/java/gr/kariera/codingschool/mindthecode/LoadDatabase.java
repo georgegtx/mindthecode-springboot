@@ -36,7 +36,9 @@ public class LoadDatabase {
 
     private static List<Car> generateRandomData() {
         int count = new Random().nextInt(500);
+
         List<Car> cars = new ArrayList<>();
+
         for (int i = 0; i < count; i++) {
             cars.add(
                     new Car(i,

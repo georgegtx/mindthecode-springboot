@@ -15,7 +15,7 @@ public class CarController {
         this.repository = repository;
     }
 
-    @GetMapping("/api/cars")
+    @GetMapping(value = "/api/cars")
     List<Car> GetCars() {
         return repository.findAll();
     }
@@ -40,6 +40,11 @@ public class CarController {
                     newCar.setId(id);
                     return repository.save(newCar);
                 });
+    }
+
+    @DeleteMapping("/api/cars")
+    void deleteAllCars() {
+        repository.deleteAll();
     }
 
     @DeleteMapping("/api/cars/{id}")

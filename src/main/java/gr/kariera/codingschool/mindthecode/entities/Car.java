@@ -27,6 +27,7 @@ public class Car {
 
     private int mileage;
     private String maker;
+    
     private String serialNumber;
 
     public Car (){}
