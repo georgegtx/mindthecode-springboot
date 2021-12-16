@@ -1,5 +1,7 @@
 package gr.kariera.codingschool.mindthecode.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,6 +14,7 @@ public class Engine {
 
     @OneToOne
     @JoinColumn(name = "car_id")
+    @JsonBackReference
     private Car car;
 
     private int size;
@@ -20,10 +23,7 @@ public class Engine {
 
     private String serialNumber;
 
-
-    public Engine() {
-
-    }
+    public Engine() { }
 
     public Engine(String serialNumber, int size, int powerHp, int cylinders, Car car) {
         this.serialNumber = serialNumber;

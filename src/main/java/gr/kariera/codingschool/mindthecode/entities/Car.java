@@ -1,25 +1,34 @@
 package gr.kariera.codingschool.mindthecode.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
+import java.util.List;
 
 
 @Entity
 @Table(name = "car")
 public class Car {
 
-    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
     private int mileage;
     private String maker;
     private String serialNumber;
 
-
+    @ManyToMany(mappedBy = "cars")
+    @JsonBackReference
+    private List<Driver> drivers;
 
     @OneToOne(mappedBy = "car")
+    @JsonManagedReference
     private Engine engine;
 
-    public Car (){}
+    public Car(){ }
 
     public Car(int mileage, String maker, String serialNumber) {
         this.mileage = mileage;
@@ -74,5 +83,13 @@ public class Car {
 
     public void setEngine(Engine engine) {
         this.engine = engine;
+    }
+
+    public List<Driver> getDrivers() {
+        return drivers;
+    }
+
+    public void setDrivers(List<Driver> drivers) {
+        this.drivers = drivers;
     }
 }
