@@ -1,13 +1,38 @@
 package gr.kariera.codingschool.mindthecode.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 
 @Entity
+@Table(name = "car")
 public class Car {
-    private @Id @GeneratedValue Long id;
+
+    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
+    private int mileage;
+    private String maker;
+    private String serialNumber;
+
+
+
+    @OneToOne(mappedBy = "car")
+    private Engine engine;
+
+    public Car (){}
+
+    public Car(int mileage, String maker, String serialNumber) {
+        this.mileage = mileage;
+        this.maker = maker;
+        this.serialNumber = serialNumber;
+    }
+
+    public Car(int mileage, String maker, String serialNumber, Engine engine) {
+        this.mileage = mileage;
+        this.maker = maker;
+        this.serialNumber = serialNumber;
+        this.engine = engine;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -22,20 +47,6 @@ public class Car {
     }
 
     public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    private int mileage;
-    private String maker;
-    
-    private String serialNumber;
-
-    public Car (){}
-
-    public Car(long id, int mileage, String maker, String serialNumber) {
-        this.id = id;
-        this.mileage = mileage;
-        this.maker = maker;
         this.serialNumber = serialNumber;
     }
 
@@ -57,5 +68,11 @@ public class Car {
         return serialNumber;
     }
 
+    public Engine getEngine() {
+        return engine;
+    }
 
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
 }
