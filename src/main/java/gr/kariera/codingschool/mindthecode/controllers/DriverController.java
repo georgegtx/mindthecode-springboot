@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 public class DriverController {
-    
+
     private final DriverRepository repository;
 
     DriverController(DriverRepository repository) {
@@ -23,7 +23,7 @@ public class DriverController {
     @GetMapping("/api/drivers/{id}")
     Driver GetDriver(@PathVariable("id") Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cannot find driver with id " + id));
+                .orElseThrow(() -> new RuntimeException("Cannot find Driver with id " + id));
     }
 
     @PutMapping("/api/drivers/{id}")
@@ -31,11 +31,11 @@ public class DriverController {
 
         return repository.findById(id)
                 .map(match -> {
-                    match.setFirstName(newDriver.getFirstName());
-                    match.setLastName(newDriver.getLastName());
-                    match.setAge(newDriver.getAge());
-                    match.setLicenceNumber(newDriver.getLicenceNumber());
                     match.setCars(newDriver.getCars());
+                    match.setLastName(newDriver.getLastName());
+                    match.setFirstName(newDriver.getFirstName());
+                    match.setLicenceNumber(newDriver.getLicenceNumber());
+                    match.setAge(newDriver.getAge());
                     return repository.save(match);
                 })
                 .orElseGet(() -> {
