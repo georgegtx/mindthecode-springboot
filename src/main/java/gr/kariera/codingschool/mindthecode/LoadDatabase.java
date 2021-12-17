@@ -17,6 +17,8 @@ import org.springframework.context.annotation.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 class GroupedDrivers {
@@ -91,7 +93,7 @@ public class LoadDatabase {
     }
 
     private static List<Cook> generateRandomCooks() {
-        int count = new Random().nextInt(500);
+        int count = getRandomUpperBound(500);
 
         List<Cook> cooks = new ArrayList<>();
 
@@ -99,10 +101,10 @@ public class LoadDatabase {
 
             cooks.add(
                     new Cook(
-                            driverNames[new Random().nextInt(driverNames.length)],
-                            driverLastNames[new Random().nextInt(driverLastNames.length)],
-                            new Random().nextInt(11) + 18,
-                            new Random().nextInt(15),
+                            driverNames[getRandomUpperBound(driverNames.length)],
+                            driverLastNames[getRandomUpperBound(driverLastNames.length)],
+                            getRandomUpperBound(11) + 18,
+                            getRandomUpperBound(15),
                             "Greek"
                     )
             );
@@ -111,48 +113,74 @@ public class LoadDatabase {
     }
 
     private static List<Driver> getRandomDrivers(List<Car> allCars) {
+        List<GroupedDrivers> groupedDrivers = groupDriversByCar(allCars);
+        return mixAndMatchDriversWithCars(allCars, groupedDrivers);
+    }
 
+    private static List<Driver> mixAndMatchDriversWithCars(List<Car> allCars, List<GroupedDrivers> groupedDrivers) {
+        return groupedDrivers.stream().flatMap(
+                group -> group
+                    .getDrivers().stream().map(mixAndMatchDriverWithCars(allCars))
+        )
+        .collect(Collectors.toList());
+    }
 
+    private static Function<Driver, Driver> mixAndMatchDriverWithCars(List<Car> allCars) {
+        return driver -> {
 
-        List<GroupedDrivers> groupedDrivers = allCars.stream().map(car -> {
-            int driverCount = new Random().nextInt(3);
+            List<Car> randomCars = allCars.stream()
+                    .filter(randomly(allCars))
+                    .filter(whenCarAlreadyOwnedBy(driver))
+                    .collect(Collectors.toList());
+
+            driver.setCars(randomCars);
+
+            return driver;
+        };
+    }
+
+    private static List<GroupedDrivers> groupDriversByCar(List<Car> allCars) {
+        return allCars.stream()
+                .map(generateRandomDriversForEachCar())
+                .collect(Collectors.toList());
+    }
+
+    private static Function<Car, GroupedDrivers> generateRandomDriversForEachCar() {
+        return car -> {
+            int driverCount = getRandomUpperBound(3);
 
             List<Driver> drivers = new ArrayList<>();
             for(int i = 0; i < driverCount; i++) {
 
-                Driver d = new Driver();
-                d.setLicenceNumber("cln-" + + new Random().nextInt(15000000));
-                d.setAge(new Random().nextInt(11) + 18);
-                d.setFirstName(driverNames[new Random().nextInt(driverNames.length)]);
-                d.setLastName(driverLastNames[new Random().nextInt(driverLastNames.length)]);
+                Driver d = new Driver(
+                    driverNames[getRandomUpperBound(driverNames.length)],
+                    driverLastNames[getRandomUpperBound(driverLastNames.length)],
+                    getRandomUpperBound(11) + 18,
+                    "cln-" + +getRandomUpperBound(15000000)
+                );
                 d.setCars(List.of(new Car[] { car }));
 
                 drivers.add(d);
             }
-
-
             return new GroupedDrivers(car.getId(), drivers);
-        })
-        .collect(Collectors.toList());
+        };
+    }
 
-        List<Driver> finalDrivers = groupedDrivers.stream().map(
-                group -> group
-                    .getDrivers().stream().map(driver -> {
-                        List<Car> randomCars = allCars.stream().filter(car -> {
-                            double r = Math.random() * allCars.size();
-                            return !driver.getCars().contains(car) && r < 2; // 2 / cars.size()
-                        }).collect(Collectors.toList());
+    private static int getRandomUpperBound(int i) {
+        return new Random().nextInt(i);
+    }
 
-                        driver.setCars(randomCars);
+    private static Predicate<Car> whenCarAlreadyOwnedBy(Driver driver) {
+        return car -> {
+            return !driver.getCars().contains(car);
+        };
+    }
 
-                        return driver;
-                    })
-                    .collect(Collectors.toList())
-        )
-        .flatMap(g -> g.stream())
-        .collect(Collectors.toList());
-
-        return finalDrivers;
+    private static Predicate<Car> randomly(List<Car> allCars) {
+        return car-> {
+            double r = Math.random() * allCars.size();
+            return r < 10;
+        };
     }
 
 
@@ -161,10 +189,10 @@ public class LoadDatabase {
         return allCars.stream().map(car -> {
 
             Engine engine = new Engine();
-            engine.setSize(new Random().nextInt(3000));
-            engine.setPowerHp(new Random().nextInt(250));
-            engine.setCylinders(new Random().nextInt(4));
-            engine.setSerialNumber("esn-" + new Random().nextInt(15000000));
+            engine.setSize(getRandomUpperBound(3000));
+            engine.setPowerHp(getRandomUpperBound(250));
+            engine.setCylinders(getRandomUpperBound(4));
+            engine.setSerialNumber("esn-" + getRandomUpperBound(15000000));
 
             engine.setCar(car);
 
@@ -174,7 +202,7 @@ public class LoadDatabase {
     }
 
     private static List<Car> generateRandomCars() {
-        int count = new Random().nextInt(500);
+        int count = getRandomUpperBound(500);
 
         List<Car> cars = new ArrayList<>();
 
@@ -182,9 +210,9 @@ public class LoadDatabase {
 
             cars.add(
                     new Car(
-                            new Random().nextInt(150000),
+                            getRandomUpperBound(150000),
                             getRandomCarMaker(),
-                            "sn-" + new Random().nextInt(15000000)
+                            "sn-" + getRandomUpperBound(15000000)
                     )
             );
         }
