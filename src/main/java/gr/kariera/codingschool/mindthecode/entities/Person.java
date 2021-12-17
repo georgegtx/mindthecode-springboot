@@ -3,6 +3,7 @@ package gr.kariera.codingschool.mindthecode.entities;
 import javax.persistence.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Person {
 
     @Id

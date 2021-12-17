@@ -15,18 +15,18 @@ public class DriverController {
         this.repository = repository;
     }
 
-    @GetMapping(value = "/api/Drivers")
+    @GetMapping(value = "/api/drivers")
     List<Driver> GetDrivers() {
         return repository.findAll();
     }
 
-    @GetMapping("/api/Drivers/{id}")
+    @GetMapping("/api/drivers/{id}")
     Driver GetDriver(@PathVariable("id") Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cannot find Driver with id " + id));
     }
 
-    @PutMapping("/api/Drivers/{id}")
+    @PutMapping("/api/drivers/{id}")
     Driver updateDriver(@RequestBody Driver newDriver, @PathVariable Long id) {
 
         return repository.findById(id)
@@ -44,12 +44,12 @@ public class DriverController {
                 });
     }
 
-    @DeleteMapping("/api/Drivers")
+    @DeleteMapping("/api/drivers")
     void deleteAllDrivers() {
         repository.deleteAll();
     }
 
-    @DeleteMapping("/api/Drivers/{id}")
+    @DeleteMapping("/api/drivers/{id}")
     void deleteDriver(@PathVariable Long id) {
         repository.deleteById(id);
     }
