@@ -16,7 +16,16 @@ public class CarController {
     }
 
     @GetMapping(value = "/api/cars")
-    List<Car> GetCars() {
+    List<Car> GetCars(
+            @RequestParam(name = "byMaker", required = false) String byMaker,
+            @RequestParam(name = "makerStartsWith", required = false) String makerStartsWith
+    ) {
+        if (byMaker != null && byMaker != "") {
+            return repository.findAllByMaker(byMaker);
+        }
+        if (makerStartsWith != null && makerStartsWith != "") {
+            return repository.findByMakerStartingWith(makerStartsWith);
+        }
         return repository.findAll();
     }
 
