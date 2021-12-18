@@ -25,6 +25,13 @@ public class Engine {
 
     public Engine() { }
 
+    public Engine(String serialNumber, int size, Car car) {
+        this.serialNumber = serialNumber;
+        this.size = size;
+        this.powerHp = powerHp;
+        this.cylinders = cylinders;
+        this.car = car;
+    }
     public Engine(String serialNumber, int size, int powerHp, int cylinders, Car car) {
         this.serialNumber = serialNumber;
         this.size = size;
