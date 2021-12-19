@@ -1,4 +1,4 @@
-package gr.kariera.codingschool.mindthecode.controllers;
+package gr.kariera.codingschool.mindthecode.controllers.api;
 
 import gr.kariera.codingschool.mindthecode.entities.Engine;
 import gr.kariera.codingschool.mindthecode.repositories.EngineRepository;

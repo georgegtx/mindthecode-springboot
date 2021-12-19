@@ -1,4 +1,4 @@
-package gr.kariera.codingschool.mindthecode.controllers;
+package gr.kariera.codingschool.mindthecode.controllers.api;
 
 import gr.kariera.codingschool.mindthecode.entities.Driver;
 import gr.kariera.codingschool.mindthecode.repositories.DriverRepository;

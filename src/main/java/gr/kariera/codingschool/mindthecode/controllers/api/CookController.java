@@ -1,4 +1,4 @@
-package gr.kariera.codingschool.mindthecode.controllers;
+package gr.kariera.codingschool.mindthecode.controllers.api;
 
 import gr.kariera.codingschool.mindthecode.entities.Cook;
 import gr.kariera.codingschool.mindthecode.repositories.CookRepository;

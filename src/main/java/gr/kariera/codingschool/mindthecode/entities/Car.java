@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 
@@ -17,7 +20,11 @@ public class Car {
     private Long id;
 
     private int mileage;
+
+    @NotBlank(message = "Car Maker is required")
     private String maker;
+
+    @Pattern(regexp = "sn-\\d{0,17}\\Z", message = "Serial number must be in the format sn-[7 digits]")
     private String serialNumber;
 
     @ManyToMany(mappedBy = "cars")
