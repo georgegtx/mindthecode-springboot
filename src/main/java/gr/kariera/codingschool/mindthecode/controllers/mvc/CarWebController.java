@@ -13,6 +13,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,10 +30,9 @@ public class CarWebController {
         this.repository = repository;
     }
 
-    @RequestMapping(value = "/searchCars", method = RequestMethod.POST)
-    public Object searchCars(
-            @ModelAttribute CarSearchModel searchModel
-    ) {
+    @PostMapping("/cars")
+    public Object searchCarsSubmit(
+            @ModelAttribute CarSearchModel searchModel) {
         return new RedirectView("/cars?searchByMaker=" + searchModel.getMaker());
     }
 
@@ -47,7 +49,7 @@ public class CarWebController {
 
         Page<Car> cars = findPaginated(
                 !searchByMaker.equals("") ?
-                        repository.findAllByMaker(searchByMaker) :
+                        repository.findByMakerStartingWith(searchByMaker) :
                         repository.findAll(),
                 PageRequest.of(page - 1, size)
         );
@@ -67,6 +69,7 @@ public class CarWebController {
 
         model.addAttribute("page", page);
         model.addAttribute("cars", cars);
+        model.addAttribute("searchModel", new CarSearchModel(searchByMaker));
         return "cars";
     }
 
