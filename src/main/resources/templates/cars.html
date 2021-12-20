@@ -22,7 +22,9 @@
 
 
 <!--/* Insert content fragment with content of the element with id = 'cars-list' */-->
-<div th:replace="fragments/layout :: content(~{:: #cars-list})">
+<div th:replace="fragments/layout :: content(value = ~{:: #cars-list})">
+
+
 
     <div id="cars-list" class="row" >
         <div class="col-md-12" th:switch="${cars.totalElements}">
