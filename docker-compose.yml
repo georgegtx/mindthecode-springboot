@@ -1,0 +1,8 @@
+version: '2'
+services:
+  mindthecode-springboot:
+    build: .
+    container_name: mindthecode-springboot
+    ports:
+      - 8080:8080
+
