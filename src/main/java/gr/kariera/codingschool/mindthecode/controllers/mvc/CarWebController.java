@@ -40,7 +40,7 @@ public class CarWebController {
     public Object showCars(
             Model model,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String searchByMaker
     ) {
         if (page < 1) {
