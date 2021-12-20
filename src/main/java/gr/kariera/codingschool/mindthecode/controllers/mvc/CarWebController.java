@@ -16,6 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +34,7 @@ public class CarWebController {
     @PostMapping("/cars")
     public Object searchCarsSubmit(
             @ModelAttribute CarSearchModel searchModel) {
-        return new RedirectView("/cars?searchByMaker=" + searchModel.getMaker());
+        return "redirect:/cars?searchByMaker=" + searchModel.getMaker();
     }
 
     @GetMapping("/cars")
@@ -71,6 +72,52 @@ public class CarWebController {
         model.addAttribute("cars", cars);
         model.addAttribute("searchModel", new CarSearchModel(searchByMaker));
         return "cars";
+    }
+
+    @GetMapping("/cars/addcar")
+    public String addCar(Model model) {
+        model.addAttribute("car", new Car());
+        return "add-car";
+    }
+
+    @PostMapping("/cars/addcar")
+    public String addCar(@Valid Car car, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "add-car";
+        }
+
+        repository.save(car);
+        model.addAttribute("car", car);
+        return "redirect:/cars";
+    }
+
+    @GetMapping("/cars/update/{id}")
+    public String updateCar(@PathVariable("id") long id, Model model) {
+        Car car = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid car Id:" + id));
+
+        model.addAttribute("car", car);
+        return "update-car";
+    }
+
+    @PostMapping("/cars/update/{id}")
+    public String updateCar(@PathVariable("id") long id, @Valid Car car,
+                            BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            car.setId(id);
+            return "update-car";
+        }
+
+        repository.save(car);
+        return "redirect:/cars";
+    }
+
+    @GetMapping("/cars/delete/{id}")
+    public String deleteCar(@PathVariable("id") long id, Model model) {
+        Car car = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid car Id:" + id));
+        repository.delete(car);
+        return "redirect:/cars";
     }
 
     private Page<Car> findPaginated(List<Car> cars, Pageable pageable) {

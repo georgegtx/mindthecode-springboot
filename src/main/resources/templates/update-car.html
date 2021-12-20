@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<!--/* Title of this template will be passed to the head fragment along with custom links and scripts */-->
+<head th:include="fragments/layout :: head(~{:: title})">
+    <title>Add Car</title>
+    <style>
+        form {
+            width: 100%;
+            max-width: 330px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+        .form .checkbox {
+            font-weight: 400;
+        }
+        form .form-control {
+            position: relative;
+            box-sizing: border-box;
+            height: auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+        form .form-control:focus {
+            z-index: 2;
+        }
+        form input {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+    </style>
+</head>
+<body>
+
+<!--/* The element with breadcrumb class will be passed to the header fragment */-->
+<header th:replace="fragments/layout :: header(~{ :: .breadcrumb})">
+    <ol class="breadcrumb container">
+        <li>
+            <a th:href="@{/}">Home</a>
+        </li>
+        /
+        <li>
+            <a th:href="@{/cars}">Cars</a>
+        </li>
+        /
+        <li>
+            <a th:href="@{/cars/edit/{id}(id=${car.id})}">Update</a>
+        </li>
+    </ol>
+</header>
+
+
+<!--/* Insert content fragment with content of the element with id = 'cars-list' */-->
+<div th:replace="fragments/layout :: content(value = ~{:: #add-car})">
+
+    <div id="add-car" class="row" >
+        <form
+              th:action="@{/cars/update/{id}(id=${car.id})}"
+              th:object="${car}"
+              method="post">
+            <div class="form-group">
+                <label for="maker">Maker</label>
+                <input type="text" th:field="*{maker}" id="maker" placeholder="Maker" class="form-control">
+                <span th:if="${#fields.hasErrors('maker')}" th:errors="*{maker}"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="serialNumber">Serial Number</label>
+                <input type="text" th:field="*{serialNumber}" id="serialNumber" placeholder="Serial Number" class="form-control">
+                <span th:if="${#fields.hasErrors('serialNumber')}" th:errors="*{serialNumber}"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="mileage">Mileage</label>
+                <input type="text" th:field="*{mileage}" id="mileage" placeholder="Mileage" class="form-control">
+                <span th:if="${#fields.hasErrors('mileage')}" th:errors="*{mileage}"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-5">Update</button>
+        </form>
+    </div>
+
+</div>
+
+<footer th:replace="fragments/layout :: footer">Footer</footer>
+</body>
+</html>

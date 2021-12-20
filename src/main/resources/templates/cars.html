@@ -33,22 +33,31 @@
                 <h2>Cars</h2>
 
                 <form th:action="@{/cars}" th:object="${searchModel}" method="post" class="form-inline">
+
                     <input class="form-control mr-sm-2" th:field="*{maker}"  type="search" placeholder="Search by maker" aria-label="Search" />
+
                 </form>
+
 
                 <table class="table">
                     <thead>
                         <tr>
+                            <th># <a class="col-md-2" th:href="@{/cars/addcar}">Add</a></th>
                             <th>Mileage</th>
                             <th>Maker</th>
                             <th>Serial Number</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
                     <tr th:each="car : ${cars.iterator()}">
+                        <td th:text="${car.id}"></td>
                         <td th:text="${car.mileage}"></td>
                         <td th:text="${car.maker}"></td>
                         <td th:text="${car.serialNumber}"></td>
+                        <td><a th:href="@{/cars/update/{id}(id=${car.id})}">Edit</a></td>
+                        <td><a th:href="@{/cars/delete/{id}(id=${car.id})}">Delete</a></td>
                     </tr>
                     </tbody>
                 </table>
