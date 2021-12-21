@@ -1,8 +1,8 @@
 package gr.kariera.codingschool.mindthecode.controllers.mvc;
 
 import gr.kariera.codingschool.mindthecode.controllers.mvc.models.CarSearchModel;
-import gr.kariera.codingschool.mindthecode.entities.Car;
-import gr.kariera.codingschool.mindthecode.repositories.CarRepository;
+import gr.kariera.codingschool.mindthecode.entities.ElectricCar;
+import gr.kariera.codingschool.mindthecode.repositories.ElectricCarRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -11,44 +11,39 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-
-import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-public class CarWebController {
+public class ElectricCarWebController {
 
-    private final CarRepository repository;
+    private final ElectricCarRepository repository;
 
-    CarWebController(CarRepository repository) {
+    ElectricCarWebController(ElectricCarRepository repository) {
         this.repository = repository;
     }
 
-    @PostMapping("/cars")
-    public Object searchCarsSubmit(
+    @PostMapping("/cars/electric")
+    public String searchCarsSubmit(
             @ModelAttribute CarSearchModel searchModel) {
-        return "redirect:/cars?searchByMaker=" + searchModel.getMaker();
+        return "redirect:/cars/electric?searchByMaker=" + searchModel.getMaker();
     }
 
-    @GetMapping("/cars")
-    public Object showCars(
+    @GetMapping("/cars/electric")
+    public String showCars(
             Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String searchByMaker
     ) {
         if (page < 1) {
-            return new RedirectView("/cars?page=1&size="+ size);
+            return "redirect:/cars/electric?page=1&size="+ size;
         };
 
-        Page<Car> cars = findPaginated(
+        Page<ElectricCar> cars = findPaginated(
                 !searchByMaker.equals("") ?
                         repository.findByMakerStartingWith(searchByMaker) :
                         repository.findAll(),
@@ -57,8 +52,8 @@ public class CarWebController {
 
         int totalPages = cars.getTotalPages();
 
-        if (page > totalPages) {
-            return new RedirectView("/cars?size="+ size + "&page=" + totalPages);
+        if (totalPages > 0 && page > totalPages) {
+            return "redirect:/cars/electric?size="+ size + "&page=" + totalPages;
         };
 
         if (totalPages > 0) {
@@ -74,34 +69,34 @@ public class CarWebController {
         return "cars";
     }
 
-    @GetMapping("/cars/addcar")
+    @GetMapping("/cars/electric/addcar")
     public String addCar(Model model) {
-        model.addAttribute("car", new Car());
+        model.addAttribute("car", new ElectricCar());
         return "add-car";
     }
 
-    @PostMapping("/cars/addcar")
-    public String addCar(@Valid Car car, BindingResult result, Model model) {
+    @PostMapping("/cars/electric/addcar")
+    public String addCar(ElectricCar car, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "add-car";
         }
 
         repository.save(car);
         model.addAttribute("car", car);
-        return "redirect:/cars";
+        return "redirect:/cars/electric";
     }
 
-    @GetMapping("/cars/update/{id}")
-    public String updateCar(@PathVariable("id") long id, Model model) {
-        Car car = repository.findById(id)
+    @GetMapping("/cars/electric/update/{id}")
+    public String updateCar(@PathVariable("id") String id, Model model) {
+        ElectricCar car = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid car Id:" + id));
 
         model.addAttribute("car", car);
         return "update-car";
     }
 
-    @PostMapping("/cars/update/{id}")
-    public String updateCar(@PathVariable("id") long id, @Valid Car car,
+    @PostMapping("/cars/electric/update/{id}")
+    public String updateCar(@PathVariable("id") String id, ElectricCar car,
                             BindingResult result, Model model) {
         if (result.hasErrors()) {
             car.setId(id);
@@ -109,23 +104,23 @@ public class CarWebController {
         }
 
         repository.save(car);
-        return "redirect:/cars";
+        return "redirect:/cars/electric";
     }
 
-    @GetMapping("/cars/delete/{id}")
-    public String deleteCar(@PathVariable("id") long id, Model model) {
-        Car car = repository.findById(id)
+    @GetMapping("/cars/electric/delete/{id}")
+    public String deleteCar(@PathVariable("id") String id, Model model) {
+        ElectricCar car = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid car Id:" + id));
         repository.delete(car);
-        return "redirect:/cars";
+        return "redirect:/cars/electric";
     }
 
-    private Page<Car> findPaginated(List<Car> cars, Pageable pageable) {
+    private Page<ElectricCar> findPaginated(List<ElectricCar> cars, Pageable pageable) {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
 
-        List<Car> result;
+        List<ElectricCar> result;
 
         if (cars.size() < startItem) {
             result = Collections.emptyList();
@@ -134,7 +129,7 @@ public class CarWebController {
             result = cars.subList(startItem, toIndex);
         }
 
-        Page<Car> carPage = new PageImpl<Car>(result, PageRequest.of(currentPage, pageSize), cars.size());
+        Page<ElectricCar> carPage = new PageImpl<ElectricCar>(result, PageRequest.of(currentPage, pageSize), cars.size());
 
         return carPage;
     }

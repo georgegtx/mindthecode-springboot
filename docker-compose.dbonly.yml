@@ -1,27 +1,5 @@
 version: '2'
 services:
-  mindthecode-springboot:
-    build:
-      context: .
-    image: mindthecode-springboot
-    container_name: mindthecode-springboot
-    restart: on-failure
-    depends_on:
-      - mongo
-    ports:
-      - "8080:8080"
-    environment:
-      - SERVER_PORT=8080
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_APPLICATION_NAME=mindthecode-springboot
-      - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=$MONGO_DB
-      - SPRING_DATA_MONGODB_AUTO_INDEX_CREATION=$MONGO_AUTO_INDEX_CREATION
-      - SPRING_DATA_MONGODB_HOST=mongo
-      - SPRING_DATA_MONGODB_PORT=27017
-      - SPRING_DATA_MONGODB_USERNAME=$MONGO_DB_USERNAME
-      - SPRING_DATA_MONGODB_PASSWORD=$MONGO_DB_PASSWORD
-      - SPRING_DATA_MONGODB_DATABASE=$MONGO_DB
-
   mongo:
     image: mongo
     container_name: mongo
@@ -39,7 +17,6 @@ services:
       - $MONGO_DATA_HOST_PATH:/data/db/
       - $MONGO_LOG_HOST_PATH:/var/log/mongodb/
       - ./users_init.sh:/docker-entrypoint-initdb.d/users_init.sh:ro
-
   mongo-express:
     image: mongo-express
     environment:
@@ -50,8 +27,7 @@ services:
       - ME_CONFIG_MONGODB_AUTH_PASSWORD=$MONGO_ROOT_PASSWORD
       - ME_CONFIG_BASICAUTH_USERNAME=$MONGO_DB_USERNAME
       - ME_CONFIG_BASICAUTH_PASSWORD=$MONGO_DB_PASSWORD
-    depends_on:
+    links:
       - mongo
     ports:
       - "8888:8081"
-

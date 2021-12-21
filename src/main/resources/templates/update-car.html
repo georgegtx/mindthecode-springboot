@@ -41,11 +41,11 @@
         </li>
         /
         <li>
-            <a th:href="@{/cars}">Cars</a>
+            <a th:href="@{/cars/electric}">Electric Cars</a>
         </li>
         /
         <li>
-            <a th:href="@{/cars/edit/{id}(id=${car.id})}">Update</a>
+            <a th:href="@{/cars/electric/edit/{id}(id=${car.id})}">Update</a>
         </li>
     </ol>
 </header>
@@ -56,7 +56,7 @@
 
     <div id="add-car" class="row" >
         <form
-              th:action="@{/cars/update/{id}(id=${car.id})}"
+              th:action="@{/cars/electric/update/{id}(id=${car.id})}"
               th:object="${car}"
               method="post">
             <div class="form-group">
@@ -75,6 +75,12 @@
                 <label for="mileage">Mileage</label>
                 <input type="text" th:field="*{mileage}" id="mileage" placeholder="Mileage" class="form-control">
                 <span th:if="${#fields.hasErrors('mileage')}" th:errors="*{mileage}"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="batteryLevel">Battery Level</label>
+                <input type="text" th:field="*{batteryLevel}" id="batteryLevel" placeholder="Battery Level" class="form-control">
+                <span th:if="${#fields.hasErrors('batteryLevel')}" th:errors="*{batteryLevel}"></span>
             </div>
 
             <button type="submit" class="btn btn-primary mt-5">Update</button>

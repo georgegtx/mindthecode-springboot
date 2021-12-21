@@ -1,19 +1,17 @@
 package gr.kariera.codingschool.mindthecode.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 
-@Entity
-@Table(name = "engine")
+@Document(collection = "engine")
 public class Engine {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    private String id;
 
-    @OneToOne
-    @JoinColumn(name = "car_id")
+    @DBRef
     @JsonBackReference
     private Car car;
 
@@ -80,11 +78,11 @@ public class Engine {
         return car;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

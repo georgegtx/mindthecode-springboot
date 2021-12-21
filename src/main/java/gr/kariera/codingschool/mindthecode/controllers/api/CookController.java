@@ -21,13 +21,13 @@ public class CookController {
     }
 
     @GetMapping("/api/cook/{id}")
-    Cook GetCook(@PathVariable("id") Long id) {
+    Cook GetCook(@PathVariable("id") String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cannot find cook with id " + id));
     }
 
     @PutMapping("/api/cook/{id}")
-    Cook updateCook(@RequestBody Cook newCook, @PathVariable Long id) {
+    Cook updateCook(@RequestBody Cook newCook, @PathVariable String id) {
 
         return repository.findById(id)
                 .map(match -> {
@@ -50,7 +50,7 @@ public class CookController {
     }
 
     @DeleteMapping("/api/cook/{id}")
-    void deleteCook(@PathVariable Long id) {
+    void deleteCook(@PathVariable String id) {
         repository.deleteById(id);
     }
 }

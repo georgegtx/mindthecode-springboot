@@ -15,11 +15,11 @@
         </li>
         /
         <li>
-            <a th:href="@{/cars}">Cars</a>
+            <a th:href="@{/cars/electric}">Electric Cars</a>
         </li>
         /
         <li>
-            <a th:href="@{/cars/addcar}">Add</a>
+            <a th:href="@{/cars/electric/addcar}">Add</a>
         </li>
     </ol>
 </header>
@@ -29,7 +29,7 @@
 <div th:replace="fragments/layout :: content(value = ~{:: #add-car})">
 
     <div id="add-car" class="row" >
-        <form th:action="@{/cars/addcar}" th:object="${car}" method="post">
+        <form th:action="@{/cars/electric/addcar}" th:object="${car}" method="post">
             <div class="form-group">
                 <label for="maker">Maker</label>
                 <input type="text" th:field="*{maker}" id="maker" placeholder="Maker" class="form-control">
@@ -46,6 +46,12 @@
                 <label for="mileage">Mileage</label>
                 <input type="text" th:field="*{mileage}" id="mileage" placeholder="Mileage" class="form-control">
                 <span th:if="${#fields.hasErrors('mileage')}" th:errors="*{mileage}"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="batteryLevel">Battery Level</label>
+                <input type="text" th:field="*{batteryLevel}" id="batteryLevel" placeholder="Battery Level" class="form-control">
+                <span th:if="${#fields.hasErrors('batteryLevel')}" th:errors="*{batteryLevel}"></span>
             </div>
 
             <button type="submit" class="btn btn-primary mt-5">Create</button>

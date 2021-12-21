@@ -30,13 +30,13 @@ public class CarController {
     }
 
     @GetMapping("/api/cars/{id}")
-    Car GetCar(@PathVariable("id") Long id) {
+    Car GetCar(@PathVariable("id") String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cannot find car with id " + id));
     }
 
     @PutMapping("/api/cars/{id}")
-    Car updateCar(@RequestBody Car newCar, @PathVariable Long id) {
+    Car updateCar(@RequestBody Car newCar, @PathVariable String id) {
 
         return repository.findById(id)
                 .map(match -> {
@@ -57,7 +57,7 @@ public class CarController {
     }
 
     @DeleteMapping("/api/cars/{id}")
-    void deleteCar(@PathVariable Long id) {
+    void deleteCar(@PathVariable String id) {
         repository.deleteById(id);
     }
 }

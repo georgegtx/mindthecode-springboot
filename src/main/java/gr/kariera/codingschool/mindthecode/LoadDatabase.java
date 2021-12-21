@@ -1,18 +1,13 @@
 package gr.kariera.codingschool.mindthecode;
 
-import gr.kariera.codingschool.mindthecode.entities.Car;
-import gr.kariera.codingschool.mindthecode.entities.Cook;
-import gr.kariera.codingschool.mindthecode.entities.Driver;
-import gr.kariera.codingschool.mindthecode.entities.Engine;
-import gr.kariera.codingschool.mindthecode.repositories.CarRepository;
-import gr.kariera.codingschool.mindthecode.repositories.CookRepository;
-import gr.kariera.codingschool.mindthecode.repositories.DriverRepository;
-import gr.kariera.codingschool.mindthecode.repositories.EngineRepository;
+import gr.kariera.codingschool.mindthecode.entities.*;
+import gr.kariera.codingschool.mindthecode.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,19 +17,19 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 class GroupedDrivers {
-    private Long CarId;
+    private String CarId;
     private List<Driver> drivers;
 
-    public GroupedDrivers(Long carId, List<Driver> drivers) {
+    public GroupedDrivers(String carId, List<Driver> drivers) {
         CarId = carId;
         this.drivers = drivers;
     }
 
-    public Long getCarId() {
+    public String getCarId() {
         return CarId;
     }
 
-    public void setCarId(Long carId) {
+    public void setCarId(String carId) {
         CarId = carId;
     }
 
@@ -68,19 +63,26 @@ public class LoadDatabase {
             "Tsanos"
     };
 
-    @Bean
-    CommandLineRunner initDatabase(
-            CarRepository carRepo,
-            EngineRepository engineRepo,
-            DriverRepository driverRepo,
-            CookRepository cookRepo
-    ) {
-        return args -> {
-            log.info("Preloading " + carRepo.saveAll(generateRandomCars()));
-            log.info("Preloading " + engineRepo.saveAll(generateRandomEngines(carRepo.findAll())));
-            log.info("Preloading " + driverRepo.saveAll(getRandomDrivers(carRepo.findAll())));
-            log.info("Preloading " + cookRepo.saveAll(generateRandomCooks()));
-        };
+    @Autowired
+    ElectricCarRepository electricCarRepo;
+    @Autowired
+    HydrogenCarRepository hydrogenCarRepo;
+    @Autowired
+    EngineRepository engineRepo;
+    @Autowired
+    DriverRepository driverRepo;
+    @Autowired
+    CookRepository cookRepo;
+
+    @EventListener(ApplicationReadyEvent.class)
+    void initDatabase() {
+        log.info("Preloading " + electricCarRepo.saveAll(generateRandomElectricCars()));
+        log.info("Preloading " + hydrogenCarRepo.saveAll(generateRandomHydrogenCars()));
+        log.info("Preloading " + engineRepo.saveAll(generateRandomEngines(electricCarRepo.findAll())));
+        log.info("Preloading " + engineRepo.saveAll(generateRandomEngines(hydrogenCarRepo.findAll())));
+        log.info("Preloading " + driverRepo.saveAll(getRandomDrivers(electricCarRepo.findAll())));
+        log.info("Preloading " + driverRepo.saveAll(getRandomDrivers(hydrogenCarRepo.findAll())));
+        log.info("Preloading " + cookRepo.saveAll(generateRandomCooks()));
     }
 
     private static String getRandomCarMaker() {
@@ -112,12 +114,12 @@ public class LoadDatabase {
         return cooks;
     }
 
-    private static List<Driver> getRandomDrivers(List<Car> allCars) {
+    private static <T extends Car> List<Driver> getRandomDrivers(List<T> allCars) {
         List<GroupedDrivers> groupedDrivers = groupDriversByCar(allCars);
         return mixAndMatchDriversWithCars(allCars, groupedDrivers);
     }
 
-    private static List<Driver> mixAndMatchDriversWithCars(List<Car> allCars, List<GroupedDrivers> groupedDrivers) {
+    private static <T extends Car> List<Driver> mixAndMatchDriversWithCars(List<T> allCars, List<GroupedDrivers> groupedDrivers) {
         return groupedDrivers.stream().flatMap(
                 group -> group
                     .getDrivers().stream().map(mixAndMatchDriverWithCars(allCars))
@@ -125,7 +127,7 @@ public class LoadDatabase {
         .collect(Collectors.toList());
     }
 
-    private static Function<Driver, Driver> mixAndMatchDriverWithCars(List<Car> allCars) {
+    private static <T extends Car> Function<Driver, Driver> mixAndMatchDriverWithCars(List<T> allCars) {
         return driver -> {
 
             List<Car> randomCars = allCars.stream()
@@ -139,7 +141,7 @@ public class LoadDatabase {
         };
     }
 
-    private static List<GroupedDrivers> groupDriversByCar(List<Car> allCars) {
+    private static <T extends Car> List<GroupedDrivers> groupDriversByCar(List<T> allCars) {
         return allCars.stream()
                 .map(generateRandomDriversForEachCar())
                 .collect(Collectors.toList());
@@ -176,7 +178,7 @@ public class LoadDatabase {
         };
     }
 
-    private static Predicate<Car> randomly(List<Car> allCars) {
+    private static <T extends Car> Predicate<T> randomly(List<T> allCars) {
         return car-> {
             double r = Math.random() * allCars.size();
             return r < 10;
@@ -184,7 +186,7 @@ public class LoadDatabase {
     }
 
 
-    private static List<Engine> generateRandomEngines(List<Car> allCars) {
+    private static <T extends Car> List<Engine> generateRandomEngines(List<T> allCars) {
 
         return allCars.stream().map(car -> {
 
@@ -201,20 +203,44 @@ public class LoadDatabase {
 
     }
 
-    private static List<Car> generateRandomCars() {
+    private static List<ElectricCar> generateRandomElectricCars() {
         int count = getRandomUpperBound(500);
 
-        List<Car> cars = new ArrayList<>();
+        List<ElectricCar> cars = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
 
             cars.add(
-                    new Car(
+                    new ElectricCar(
                             getRandomUpperBound(150000),
                             getRandomCarMaker(),
-                            "sn-" + getRandomUpperBound(15000000)
+                            "sn-" + getRandomUpperBound(15000000),
+                            getRandomUpperBound(100),
+                            ElectricCar.ChargingSocket.Type2
                     )
             );
+
+        }
+        return cars;
+    }
+
+    private static List<HydrogenCar> generateRandomHydrogenCars() {
+        int count = getRandomUpperBound(500);
+
+        List<HydrogenCar> cars = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+
+            cars.add(
+                    new HydrogenCar(
+                            getRandomUpperBound(150000),
+                            getRandomCarMaker(),
+                            "sn-" + getRandomUpperBound(15000000),
+                            getRandomUpperBound(100)
+                    )
+            );
+
+
         }
         return cars;
     }

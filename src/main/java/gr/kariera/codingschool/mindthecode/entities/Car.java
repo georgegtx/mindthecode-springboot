@@ -2,36 +2,29 @@ package gr.kariera.codingschool.mindthecode.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.util.List;
 
-
-@Entity
-@Table(name = "car")
-public class Car {
+@Document(collection = "cars")
+public abstract class Car {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    private String id;
 
     private int mileage;
 
-    @NotBlank(message = "Car Maker is required")
     private String maker;
 
-    @Pattern(regexp = "sn-\\d{0,17}\\Z", message = "Serial number must be in the format sn-[7 digits]")
     private String serialNumber;
 
-    @ManyToMany(mappedBy = "cars")
+    @DBRef
     @JsonBackReference
     private List<Driver> drivers;
 
-    @OneToOne(mappedBy = "car")
+    @DBRef
     @JsonManagedReference
     private Engine engine;
 
@@ -50,7 +43,7 @@ public class Car {
         this.engine = engine;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -66,7 +59,7 @@ public class Car {
         this.serialNumber = serialNumber;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

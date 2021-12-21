@@ -1,15 +1,13 @@
 package gr.kariera.codingschool.mindthecode.entities;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public class Person {
+@Document(collection = "person")
+public abstract class Person {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    private String id;
 
     private String firstName;
     private String lastName;
@@ -23,11 +21,11 @@ public class Person {
         this.age = age;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -21,13 +21,13 @@ public class EngineController {
     }
 
     @GetMapping("/api/engines/{id}")
-    Engine GetEngine(@PathVariable("id") Long id) {
+    Engine GetEngine(@PathVariable("id") String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cannot find engine with id " + id));
     }
 
     @PutMapping("/api/engines/{id}")
-    Engine updateEngine(@RequestBody Engine newEngine, @PathVariable Long id) {
+    Engine updateEngine(@RequestBody Engine newEngine, @PathVariable String id) {
 
         return repository.findById(id)
                 .map(match -> {
@@ -49,7 +49,7 @@ public class EngineController {
     }
 
     @DeleteMapping("/api/engines/{id}")
-    void deleteEngine(@PathVariable Long id) {
+    void deleteEngine(@PathVariable String id) {
         repository.deleteById(id);
     }
 }

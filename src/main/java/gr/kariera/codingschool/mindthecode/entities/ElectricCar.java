@@ -1,15 +1,17 @@
 package gr.kariera.codingschool.mindthecode.entities;
 
-import javax.persistence.Entity;
 
-class ChargingSocket {
-    public static String Type2 = "Type2";
-    public static String Menekes = "Menekes";
-}
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-
-@Entity
+@Document(collection = "cars")
+@TypeAlias("electric")
 public class ElectricCar extends Car {
+
+    public static class ChargingSocket {
+        public static String Type2 = "Type2";
+        public static String Menekes = "Menekes";
+    }
 
     private int batteryLevel;
     private String socket;

@@ -17,7 +17,7 @@
                     <a class="nav-link" th:classappend="${#request.requestURI.equals('/') ? 'active':''}" aria-current="page" href="/">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:classappend="${#request.requestURI.startsWith('/cars') ? 'active':''}" href="/cars">Cars</a>
+                    <a class="nav-link" th:classappend="${#request.requestURI.startsWith('/cars/electric') ? 'active':''}" href="/cars/electric">Electric Cars</a>
                 </li>
 
                 <li th:if="${#request.isUserInRole('USER')}" class="nav-item">

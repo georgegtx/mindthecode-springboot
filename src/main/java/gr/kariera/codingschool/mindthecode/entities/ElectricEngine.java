@@ -1,8 +1,10 @@
 package gr.kariera.codingschool.mindthecode.entities;
 
-import javax.persistence.Entity;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document(collection = "engine")
+@TypeAlias("electric")
 public class ElectricEngine extends Engine {
     private double switchFrequency;
 

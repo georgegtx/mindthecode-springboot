@@ -1,10 +1,10 @@
 package gr.kariera.codingschool.mindthecode.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "hydrogen_car")
+@Document(collection = "cars")
+@TypeAlias("hydrogen")
 public class HydrogenCar extends Car {
 
     private int tankLevel;

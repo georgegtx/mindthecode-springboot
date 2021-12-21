@@ -1,8 +1,10 @@
 package gr.kariera.codingschool.mindthecode.entities;
 
-import javax.persistence.Entity;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document(collection = "person")
+@TypeAlias("cook")
 public class Cook extends Person {
 
     private int yearsOfExperience;

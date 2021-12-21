@@ -1,21 +1,19 @@
 package gr.kariera.codingschool.mindthecode.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.util.List;
 
-@Entity
-@Table(name = "driver")
+@Document(collection = "person")
+@TypeAlias("driver")
 public class Driver extends Person {
 
     private String licenceNumber;
 
-    @ManyToMany
-    @JoinTable(
-            name = "DRIVER_CARS",
-            joinColumns = @JoinColumn(name = "driver_id"),
-            inverseJoinColumns = @JoinColumn(name = "car_id"))
+    @DBRef
     @JsonManagedReference
     private List<Car> cars;
 
