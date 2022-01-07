@@ -80,6 +80,14 @@ public class CarWebController {
         return "add-car";
     }
 
+    @GetMapping("/cars/deleteOld")
+    public String deleteOld(Model model) {
+        repository.deleteOldCars();
+        return "redirect:/cars";
+    }
+
+
+
     @PostMapping("/cars/addcar")
     public String addCar(@Valid Car car, BindingResult result, Model model) {
         if (result.hasErrors()) {

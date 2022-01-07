@@ -12,8 +12,7 @@ public class Engine {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "car_id")
+    @OneToOne(mappedBy = "engine", cascade = CascadeType.REMOVE)
     @JsonBackReference
     private Car car;
 

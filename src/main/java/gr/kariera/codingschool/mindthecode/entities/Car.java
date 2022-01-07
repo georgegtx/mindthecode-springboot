@@ -26,11 +26,12 @@ public class Car {
     @Pattern(regexp = "sn-\\d{0,17}\\Z", message = "Serial number must be in the format sn-[7 digits]")
     private String serialNumber;
 
-    @ManyToMany(mappedBy = "cars")
+    @ManyToMany(mappedBy = "cars", cascade = CascadeType.REMOVE)
     @JsonBackReference
     private List<Driver> drivers;
 
-    @OneToOne(mappedBy = "car")
+    @OneToOne()
+    @JoinColumn(name = "engine_id")
     @JsonManagedReference
     private Engine engine;
 
