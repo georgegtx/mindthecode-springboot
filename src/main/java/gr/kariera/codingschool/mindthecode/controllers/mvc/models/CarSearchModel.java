@@ -4,18 +4,19 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CarSearchModel {
-    private String maker;
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    private String query;
 
     public CarSearchModel(){}
-    public CarSearchModel(String maker) {
-        this.maker = maker;
+    public CarSearchModel(String query) {
+        this.query = query;
     }
 
-    public String getMaker() {
-        return maker;
-    }
-
-    public void setMaker(String maker) {
-        this.maker = maker;
-    }
 }

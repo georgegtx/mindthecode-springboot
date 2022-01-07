@@ -34,7 +34,7 @@ public class CarWebController {
     @PostMapping("/cars")
     public Object searchCarsSubmit(
             @ModelAttribute CarSearchModel searchModel) {
-        return "redirect:/cars?searchByMaker=" + searchModel.getMaker();
+        return "redirect:/cars?search=" + searchModel.getQuery();
     }
 
     @GetMapping("/cars")
@@ -42,15 +42,15 @@ public class CarWebController {
             Model model,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "") String searchByMaker
+            @RequestParam(defaultValue = "") String search
     ) {
         if (page < 1) {
             return new RedirectView("/cars?page=1&size="+ size);
         };
 
         Page<Car> cars = findPaginated(
-                !searchByMaker.equals("") ?
-                        repository.findByMakerStartingWith(searchByMaker) :
+                !search.equals("") ?
+                        repository.freeTextSearch(search) :
                         repository.findAll(),
                 PageRequest.of(page - 1, size)
         );
@@ -70,7 +70,7 @@ public class CarWebController {
 
         model.addAttribute("page", page);
         model.addAttribute("cars", cars);
-        model.addAttribute("searchModel", new CarSearchModel(searchByMaker));
+        model.addAttribute("searchModel", new CarSearchModel(search));
         return "cars";
     }
 

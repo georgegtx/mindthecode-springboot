@@ -34,7 +34,7 @@
 
                 <form th:action="@{/cars}" th:object="${searchModel}" method="post" class="form-inline">
 
-                    <input class="form-control mr-sm-2" th:field="*{maker}"  type="search" placeholder="Search by maker" aria-label="Search" />
+                    <input class="form-control mr-sm-2" th:field="*{query}"  type="search" placeholder="Search" aria-label="Search" />
 
                 </form>
 
@@ -80,7 +80,7 @@
                         <li class="page-item" th:each="pageNumber : ${pageNumbers}">
                             <a class="page-link"
                                th:style="${pageNumber == page ? 'background:#c7c7c7;' : 'background:initial;'}"
-                               th:href="@{/cars(size=${cars.size}, page=${pageNumber}, searchByMaker=${searchModel.maker})}"
+                               th:href="@{/cars(size=${cars.size}, page=${pageNumber}, searchByMaker=${searchModel.query})}"
                                th:text="${pageNumber}"></a>
                         </li>
 
@@ -88,7 +88,7 @@
                         <li class="page-item">
                             <a class="page-link"
                                th:style="${cars.hasNext ? 'pointer-events:initial;' : 'pointer-events:none;color:#c5c4c4'}"
-                               th:href="@{/cars(size=${cars.size}, page=${page + 1}, searchByMaker=${searchModel.maker})}"
+                               th:href="@{/cars(size=${cars.size}, page=${page + 1}, searchByMaker=${searchModel.query})}"
                                aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                                 <span class="sr-only">Next</span>
